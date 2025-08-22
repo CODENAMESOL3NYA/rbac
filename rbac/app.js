@@ -3,13 +3,25 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const dotenv = require("dotenv")
+const connectDB = require("./config/db");
+const dotenv=require('dotenv');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+if (process.env.NODE_ENV !== "production") {
+  try {
+    dotenv.config();
+    console.log("Environment variables loaded successfully.");
+  } catch (error) {
+    console.error("Error loading environment variables:", error);
+  }
+}
+
+
 var app = express();
 
+connectDB()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -21,7 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

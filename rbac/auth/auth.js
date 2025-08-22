@@ -37,21 +37,20 @@ exports.register = async (req, res) => {
     res.status(500).json({error:"Internal Server Error"})  }
 };
 
-exports.login = async(req,res)=>{
+exports.login = async (req,res) => {
     try {
-        const{username,password}=req.body;
+        const{ username, password }=req.body;
         if(!username||!password){
             return res.status(400).json({message:"Required Fields Missing"})
         }
-        const user = await User.findOne({username:username});
+        const user = await User.findOne({username});
         
         if(!user||!(await bcrypt.compare(password,user.password))){
             return res.status(401).json({message:"Invalid Credentials"})
         }
-
         const token = jwt.sign({id:user._id,role:user.role},process.env.SECRET,{expiresIn:'1h'})
-        res.json({token})
+        res.json({token:token})
     } catch (error) {
         res.status(500).json({error:"Internal Server Error"})  
     }
-}
+};

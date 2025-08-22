@@ -4,4 +4,4 @@ const roles = {
   user: ["read"],
 };
 
-module.exports = roles;
+module.exports=roles
